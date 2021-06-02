@@ -41,12 +41,11 @@ def create_dataset(dataset, look_back=look_back_terms):
 numpy.random.seed(7)
 
 # load the dataset
-##uploaded_file = st.file_uploader("Please Upload AirPassengers.csv", type="csv")
-##
-##if uploaded_file:
-##        dataframe = read_csv(uploaded_file, usecols=[1], engine='python')
+uploaded_file = st.file_uploader("Please Upload AirPassengers.csv", type="csv")
 
-dataframe = read_csv("AirPassengers.csv", usecols=[1], engine='python')    
+if uploaded_file:
+    dataframe = read_csv(uploaded_file, usecols=[1], engine='python')
+
 dataset = dataframe.values
 dataset = dataset.astype('float32')
 
@@ -78,21 +77,7 @@ model.fit(trainX, trainY, epochs=epochs, batch_size=1, verbose=2)
 
 # make predictions
 trainPredict = model.predict(trainX)
-testPredict = model.predict(testX)
-
-
-###Forecast for any given input
-##input_file = st.file_uploader("Please upload input.csv", type="csv")
-##if input_file:
-##        data = read_csv(input_file, engine='python',header=None)
-##        data = data.values
-##        data = data.astype('float32')
-##        data = scaler.fit_transform(data)
-##        data,_ = create_dataset(data)
-##        data = numpy.reshape(data, (data.shape[0], 1, data.shape[1]))
-##
-##forecast = model.predict(scaler.fit_transform([[[]]]))
-##st.write("forecast value : ",scaler.inverse_transform(forecast))                
+testPredict = model.predict(testX)           
 
 # invert predictions
 trainPredict = scaler.inverse_transform(trainPredict)
@@ -126,13 +111,6 @@ testPredictPlot = numpy.empty_like(dataset)
 testPredictPlot[:, :] = numpy.nan
 testPredictPlot[len(trainPredict)+(look_back*2)+1:len(dataset)-1, :] = testPredict
 
-# plot baseline and predictions
-##plt.plot(scaler.inverse_transform(dataset))
-##plt.plot(trainPredictPlot)
-##plt.plot(testPredictPlot)
-##plt.show()
-
-
 
 st.write("""
 # Original Dataset
@@ -150,12 +128,4 @@ st.write("""
 # Train-Test Dataset Predictions
 """)
 st.area_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
-
-
-st.write("""
-# Monthly-Yearly Trend in Dataset
-""")
-st.image('monthlytrend.png',width=600)
-
-
 
