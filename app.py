@@ -146,3 +146,11 @@ col1.image('Forecasting window.png')
 
 col2.image('Prediction.png')
 
+future = read_csv("AirPassengers - future.csv", usecols=[1], engine='python')
+fig2 = px.line(x=future.index, y=future['#Passengers'], labels={'x':"Time in Months", 'y':"No of Passengers"})
+st.write("""
+## Forecasting 24 months into the Future
+""")
+st.plotly_chart(fig2, use_container_width=True, sharing='streamlit')
+
+
