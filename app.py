@@ -1,6 +1,4 @@
 
-
-
 # LSTM for international airline passengers problem with regression framing
 import streamlit as st
 import numpy
@@ -140,6 +138,11 @@ st.write("""
 st.line_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
 
 
+st.write("------------------------------")
 
+col1, col2 = st.beta_columns(2)
 
+col1.image('Forecasting Window.png')
+
+col2.image('Prediction.png')
 
