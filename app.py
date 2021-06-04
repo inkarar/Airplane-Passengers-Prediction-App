@@ -1,4 +1,5 @@
 
+
 # LSTM for international airline passengers problem with regression framing
 import streamlit as st
 import numpy
@@ -19,17 +20,17 @@ st.write("""
 # Header of Specify Input Parameters
 st.sidebar.header('Specify Input Parameters')
 
-look_back_terms = st.sidebar.slider('look_back_terms', 1, 20)
+look_back = st.sidebar.slider('look_back_terms', 1, 20)
 epochs = st.sidebar.slider('epochs', 1, 50)
 train_size = st.sidebar.slider('train dataset size (%)', 1, 100)
 
-df = pd.DataFrame({'look_back_terms':look_back_terms,'epochs':epochs,"train_dataset_size":train_size},index=[0])
+df = pd.DataFrame({'look_back_terms':look_back,'epochs':epochs,"train_dataset_size":train_size},index=[0])
 
 st.header('Specified Input parameters')
 st.write(df)
 
 # convert an array of values into a dataset matrix
-def create_dataset(dataset, look_back=look_back_terms):
+def create_dataset(dataset, look_back=look_back):
     dataX, dataY = [], []
     for i in range(len(dataset)-look_back-1):
         a = dataset[i:(i+look_back), 0]
@@ -41,17 +42,21 @@ def create_dataset(dataset, look_back=look_back_terms):
 numpy.random.seed(7)
 
 # load the dataset
-uploaded_file = st.file_uploader("Please Upload AirPassengers.csv", type="csv")
+##uploaded_file = st.file_uploader("Please Upload AirPassengers.csv", type="csv")
+##
+##if uploaded_file:
+##        dataframe = read_csv(uploaded_file, usecols=[1], engine='python')
 
-if uploaded_file:
-    dataframe = read_csv(uploaded_file, usecols=[1], engine='python')
-
+dataframe = read_csv("AirPassengers.csv", usecols=[1], engine='python')    
 dataset = dataframe.values
 dataset = dataset.astype('float32')
+
 
 # normalize the dataset
 scaler = MinMaxScaler(feature_range=(0, 1))
 dataset = scaler.fit_transform(dataset)
+
+
 
 # split into train and test sets
 #train_size = int(len(dataset) * 0.67)
@@ -59,10 +64,10 @@ train_size = int(len(dataset) * train_size * 0.01)
 test_size = len(dataset) - train_size
 train, test = dataset[0:train_size,:], dataset[train_size:len(dataset),:]
 
+
 # reshape into X=t and Y=t+1
-look_back = 1
-trainX, trainY = create_dataset(train, look_back)
-testX, testY = create_dataset(test, look_back)
+trainX, trainY = create_dataset(train)
+testX, testY = create_dataset(test)
 
 # reshape input to be [samples, time steps, features]
 trainX = numpy.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
@@ -77,7 +82,7 @@ model.fit(trainX, trainY, epochs=epochs, batch_size=1, verbose=2)
 
 # make predictions
 trainPredict = model.predict(trainX)
-testPredict = model.predict(testX)           
+testPredict = model.predict(testX)       
 
 # invert predictions
 trainPredict = scaler.inverse_transform(trainPredict)
@@ -111,6 +116,13 @@ testPredictPlot = numpy.empty_like(dataset)
 testPredictPlot[:, :] = numpy.nan
 testPredictPlot[len(trainPredict)+(look_back*2)+1:len(dataset)-1, :] = testPredict
 
+# plot baseline and predictions
+##plt.plot(scaler.inverse_transform(dataset))
+##plt.plot(trainPredictPlot)
+##plt.plot(testPredictPlot)
+##plt.show()
+
+
 
 st.write("""
 # Original Dataset
@@ -127,5 +139,13 @@ st.area_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_containe
 st.write("""
 # Train-Test Dataset Predictions
 """)
-st.area_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
+st.line_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
+
+
+st.write("""
+# Monthly-Yearly Trend in Dataset
+""")
+st.image('monthlytrend.png',width=600)
+
+
 
