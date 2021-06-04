@@ -1,9 +1,11 @@
 
 
+
 # LSTM for international airline passengers problem with regression framing
 import streamlit as st
 import numpy
 import matplotlib.pyplot as plt
+import plotly.express as px
 from pandas import read_csv
 import pandas as pd
 import math
@@ -19,15 +21,13 @@ st.write("""
 
 # Header of Specify Input Parameters
 st.sidebar.header('Specify Input Parameters')
+st.sidebar.write('Play around with these parameters')
 
-look_back = st.sidebar.slider('look_back_terms', 1, 20)
-epochs = st.sidebar.slider('epochs', 1, 50)
-train_size = st.sidebar.slider('train dataset size (%)', 1, 100)
+look_back = st.sidebar.slider('Window Size in No of Months ---->', 1, 20, 4)
+epochs = st.sidebar.slider('No of Epochs/Iteraions of Dataset ---->', 1, 50,10)
+train_size = st.sidebar.slider('Train Dataset Size(%) ---->', 1, 100,45)
 
 df = pd.DataFrame({'look_back_terms':look_back,'epochs':epochs,"train_dataset_size":train_size},index=[0])
-
-st.header('Specified Input parameters')
-st.write(df)
 
 # convert an array of values into a dataset matrix
 def create_dataset(dataset, look_back=look_back):
@@ -97,7 +97,8 @@ trainScore = math.sqrt(mean_squared_error(trainY[0], trainPredict[:,0]))
 st.sidebar.write("--------------")
 
 st.sidebar.write("""
-# Model Results 
+# Model Results
+model error - smaller the error, the better
 """)
 
 st.sidebar.write('Train Score: %.2f RMSE' % (trainScore))
@@ -116,36 +117,29 @@ testPredictPlot = numpy.empty_like(dataset)
 testPredictPlot[:, :] = numpy.nan
 testPredictPlot[len(trainPredict)+(look_back*2)+1:len(dataset)-1, :] = testPredict
 
-# plot baseline and predictions
-##plt.plot(scaler.inverse_transform(dataset))
-##plt.plot(trainPredictPlot)
-##plt.plot(testPredictPlot)
-##plt.show()
-
-
-
+#plots
+fig1 = px.line(x=dataframe.index, y=dataframe['#Passengers'], labels={'x':"Time in Months", 'y':"No of Passengers"})
 st.write("""
-# Original Dataset
+## Original Dataset
 """)
-st.area_chart(scaler.inverse_transform(dataset),use_container_width=True)
-
+st.plotly_chart(fig1, use_container_width=True, sharing='streamlit')
 
 st.write("""
-# Train-Test Split of Dataset
+## Train-Test Dataset Split
 """)
 st.area_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
 
+st.write("""
+## Monthly-Yearly Trend in Dataset
+""")
+st.image('monthlytrend.png',width=600)
 
 st.write("""
-# Train-Test Dataset Predictions
+## FORECASTING No of Passengers
 """)
 st.line_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
 
 
-st.write("""
-# Monthly-Yearly Trend in Dataset
-""")
-st.image('monthlytrend.png',width=600)
 
 
 
