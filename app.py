@@ -131,7 +131,9 @@ st.write("""
 ## Monthly-Yearly Trend in Dataset (1999 - 2010)
 """)
 st.image('monthlytrend.png',width=600)
-st.write('Evidently, JULY and AUGUST are the crowdiest months!')
+st.write('''
+### Evidently, JULY and AUGUST are the crowdiest months!
+''')
 
 
 st.write("""
@@ -149,7 +151,6 @@ col1.image('Forecasting Window.png')
 col2.image('Prediction.png')
 
 future = read_csv("AirPassengers - future.csv", usecols=[1], engine='python')
-st.write(future.iloc[144])
 future = future.iloc[144:]
 fig2 = px.line(x=future.index, y=future['#Passengers'], labels={'x':"Time in Months", 'y':"No of Passengers"})
 st.write("""
