@@ -21,9 +21,9 @@ st.write("""
 st.sidebar.header('Specify Input Parameters')
 st.sidebar.write('Play around with these parameters')
 
-look_back = st.sidebar.slider('Window Size in No of Months ---->', 1, 20, 4)
-epochs = st.sidebar.slider('No of Epochs/Iteraions of Dataset ---->', 1, 50,10)
-train_size = st.sidebar.slider('Train Dataset Size(%) ---->', 1, 100,45)
+look_back = st.sidebar.slider('Window Size in No of Months ---->', 1, 20, 6)
+epochs = st.sidebar.slider('No of Epochs/Iteraions of Dataset ---->', 1, 50,19)
+train_size = st.sidebar.slider('Train Dataset Size(%) ---->', 1, 100,64)
 
 df = pd.DataFrame({'look_back_terms':look_back,'epochs':epochs,"train_dataset_size":train_size},index=[0])
 
@@ -118,22 +118,24 @@ testPredictPlot[len(trainPredict)+(look_back*2)+1:len(dataset)-1, :] = testPredi
 #plots
 fig1 = px.line(x=dataframe.index, y=dataframe['#Passengers'], labels={'x':"Time in Months", 'y':"No of Passengers"})
 st.write("""
-## Original Dataset
+## Original Dataset (1999 - 2010)
 """)
 st.plotly_chart(fig1, use_container_width=True, sharing='streamlit')
 
 st.write("""
-## Train-Test Dataset Split
+## Train-Test Dataset Split 
 """)
 st.area_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
 
 st.write("""
-## Monthly-Yearly Trend in Dataset
+## Monthly-Yearly Trend in Dataset (1999 - 2010)
 """)
 st.image('monthlytrend.png',width=600)
+st.write('Evidently, JULY and AUGUST are the crowdiest months!')
+
 
 st.write("""
-## FORECASTING No of Passengers
+## FORECASTING No of Airplane Passengers
 """)
 st.line_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
 
@@ -142,15 +144,15 @@ st.write("------------------------------")
 
 col1, col2 = st.beta_columns(2)
 
-col1.image('Forecasting window.png')
+col1.image('Forecasting Window.png')
 
 col2.image('Prediction.png')
 
 future = read_csv("AirPassengers - future.csv", usecols=[1], engine='python')
+st.write(future.iloc[144])
+future = future.iloc[144:]
 fig2 = px.line(x=future.index, y=future['#Passengers'], labels={'x':"Time in Months", 'y':"No of Passengers"})
 st.write("""
-## Forecasting 24 months into the Future
+## Forecasting 24 months into the Future (2011 - 2012)
 """)
 st.plotly_chart(fig2, use_container_width=True, sharing='streamlit')
-
-
