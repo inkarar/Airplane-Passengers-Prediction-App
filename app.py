@@ -146,7 +146,7 @@ st.write("------------------------------")
 
 col1, col2 = st.beta_columns(2)
 
-col1.image('Forecasting Window.png')
+col1.image('Forecasting window.png')
 
 col2.image('Prediction.png')
 
