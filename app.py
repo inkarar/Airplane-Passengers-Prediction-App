@@ -135,14 +135,13 @@ st.write('''
 ### Evidently, JULY and AUGUST are the crowdiest months!
 ''')
 
+st.write("------------------------------")
 
 st.write("""
 ## FORECASTING No of Airplane Passengers
 """)
 st.line_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
 
-
-st.write("------------------------------")
 
 col1, col2 = st.beta_columns(2)
 
