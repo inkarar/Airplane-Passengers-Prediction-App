@@ -138,21 +138,7 @@ st.write('''
 st.write("------------------------------")
 
 st.write("""
-## FORECASTING No of Airplane Passengers
+## Predicting No of Airplane Passengers
 """)
 st.line_chart(numpy.append(trainPredictPlot,testPredictPlot,axis=1),use_container_width=True)
 
-
-col1, col2 = st.beta_columns(2)
-
-col1.image('Forecasting window.png')
-
-col2.image('Prediction.png')
-
-future = read_csv("AirPassengers - future.csv", usecols=[1], engine='python')
-future = future.iloc[144:]
-fig2 = px.line(x=future.index, y=future['#Passengers'], labels={'x':"Time in Months", 'y':"No of Passengers"})
-st.write("""
-## Forecasting 24 months into the Future (2011 - 2012)
-""")
-st.plotly_chart(fig2, use_container_width=True, sharing='streamlit')
